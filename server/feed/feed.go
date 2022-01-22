@@ -6,29 +6,10 @@ import (
   "github.com/mmcdole/gofeed"
 )
 
-type data struct {
+type Data struct {
   Title string `json: "title"`
   Link string `json: "link"`
-  Extensions []Extension `json: "extensions"`
-}
-
-type Extension struct {
-  Dc Dc `json: "dc"`
-}
-
-type Dc struct {
-  Date []Date `json: "date"`
-  Subject []Subject `json: "subjects"`
-}
-
-type Date struct {
-    Name string `json: "name"`
-    Value string `json: "value"`
-}
-
-type Subject struct {
-    Name string `json:  "name"`
-    Value string `json: "value"`
+  Categories []string `json: "categories"`
 }
 
 func Feed(link string) ([]byte){
@@ -37,7 +18,17 @@ func Feed(link string) ([]byte){
     fmt.Println(feed)
 
     items := feed.Items
-    item := items[0]
-    data, _ := json.MarshalIndent(&item, "", "\t")
+    var list []Data
+    for _, item := range items {
+      info := Data{}
+      
+      fmt.Println(item)
+      info.Title = item.Title
+      info.Link = item.Link
+      info.Categories = item.Categories
+
+      list = append(list, info)
+    }
+    data, _ := json.MarshalIndent(&list, "", "\t")
     return data
 }
