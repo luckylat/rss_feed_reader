@@ -13,11 +13,10 @@ func main() {
 	http.HandleFunc("/rss/select", selectHandler)
 	http.HandleFunc("/rss/insert", insertHandler)
 	http.HandleFunc("/rss/delete", deleteHandler)
+
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		log.Fatal("ListenAndServer", err)
-	} else {
-		fmt.Println("Running server on http://localhost:8080")
 	}
 }
 
