@@ -36,7 +36,7 @@ func ConnectDB() (*sql.DB){
   return db
 }
 
-func AddLink(link string){
+func InsertLink(link string){
 	db := ConnectDB()
   stmt, err := db.Prepare(`
 	   INSERT INTO links(link, count_clicked)
@@ -48,15 +48,13 @@ func AddLink(link string){
 	}
 	
 	_, err = stmt.Exec(link, 0)
-	
-	defer stmt.Close()
   defer db.Close()
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Add link!")
+	log.Println("Add link!")
 }
 
 func GetLink() ([]string){
@@ -80,7 +78,23 @@ func GetLink() ([]string){
 		links = append(links, link)
 	}
   
-	fmt.Println(links)
-	fmt.Println("Get links!")
+	defer db.Close()
+	
+	log.Println(links)
+	log.Println("Get links!")
 	return links
+}
+
+func DeleteLink(link string){
+	db := ConnectDB()
+	del, err := db.Prepare("DELETE FROM links WHERE link=?")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	del.Exec(link)
+  log.Println("Delete link!")
+	defer db.Close()
+
 }
