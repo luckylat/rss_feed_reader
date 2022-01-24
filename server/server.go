@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"log"
 	"net/http"
 	"fmt"
@@ -46,17 +47,20 @@ func selectHandler(w http.ResponseWriter, r *http.Request){
 
 func insertHandler(w http.ResponseWriter, r *http.Request){
 	if r.Method == "POST" {
-		r.ParseForm()
-		fmt.Println(r.Form)
-		sql.InsertLink(r.FormValue("link"))
+		bufbody := new(bytes.Buffer)
+		bufbody.ReadFrom(r.Body)
+		body := bufbody.String()
+		sql.InsertLink(body)
 	}
 	http.Redirect(w, r, "/", 301)
 }
 
 func deleteHandler(w http.ResponseWriter, r *http.Request){
 	if r.Method == "POST" {
-		r.ParseForm()
-		sql.DeleteLink(r.FormValue("link"))
+		bufbody := new(bytes.Buffer)
+		bufbody.ReadFrom(r.Body)
+		body := bufbody.String()
+		sql.DeleteLink(body)
 	}
 	http.Redirect(w, r, "/", 301)
 }
