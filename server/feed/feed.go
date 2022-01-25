@@ -7,6 +7,7 @@ import (
 )
 
 type Data struct {
+  Rss string `json: "rss"`
   Title string `json: "title"`
   Link string `json: "link"`
   Categories []string `json: "categories"`
@@ -23,6 +24,7 @@ func Feed(link string) ([]byte){
       info := Data{}
       
       fmt.Println(item)
+      info.Rss = link
       info.Title = item.Title
       info.Link = item.Link
       info.Categories = item.Categories
