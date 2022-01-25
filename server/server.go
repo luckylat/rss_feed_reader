@@ -31,12 +31,9 @@ func selectHandler(w http.ResponseWriter, r *http.Request){
 	if r.Method == "GET" {
 		var data []byte
 		links := sql.GetLink()
-		for _, link := range links {
-			fmt.Println(link)
-      data = feed.Feed(link)
-		}
+		data = feed.Feed(links)
     
-
+    fmt.Println(string(data))
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 		fmt.Fprint(w, string(data))

@@ -56,45 +56,47 @@ func GetImage(url string) (string){
 }
 
 
-func Feed(link string) ([]byte){
-    fp := gofeed.NewParser();
-    feed, _ := fp.ParseURL(link)
-    fmt.Println(feed)
-
-    items := feed.Items
+func Feed(links []string) ([]byte){
     var list []Data
-    for _, item := range items {
-      info := Data{}
+    fp := gofeed.NewParser();
+    for _, link := range links{
+      feed, _ := fp.ParseURL(link)
+      fmt.Println(feed)
+
+      items := feed.Items
+      for _, item := range items {
+        info := Data{}
       
-      info.Rss = link
-      info.Title = item.Title
-      info.Link = item.Link
-      info.Categories = item.Categories
+        info.Rss = link
+        info.Title = item.Title
+        info.Link = item.Link
+        info.Categories = item.Categories
       
-      if link == "https://gigazine.net/news/rss_2.0/" {
-        url := ImageLink(item.GUID)
-        info.Image = GetImage(url)
-      } else if item.Image != nil {
-        fmt.Println(item.Image.URL)
-        info.Image = GetImage(item.Image.URL)
-      } else {
-         file, err := os.Open("./feed/rss.jpg")
-         if err != nil {
-           log.Fatal(err)
-         }
+        if link == "https://gigazine.net/news/rss_2.0/" {
+          url := ImageLink(item.GUID)
+          info.Image = GetImage(url)
+        } else if item.Image != nil {
+          fmt.Println(item.Image.URL)
+          info.Image = GetImage(item.Image.URL)
+        } else {
+          file, err := os.Open("./feed/rss.jpg")
+        if err != nil {
+          log.Fatal(err)
+        }
 
-         fi, _ := file.Stat()
-         size := fi.Size()
+        fi, _ := file.Stat()
+        size := fi.Size()
 
-         data := make([]byte, size)
+        data := make([]byte, size)
 
-         file.Read(data)
+        file.Read(data)
 
-         info.Image = base64.StdEncoding.EncodeToString(data)
+        info.Image = base64.StdEncoding.EncodeToString(data)
       }
 
       list = append(list, info)
     }
-    data, _ := json.MarshalIndent(&list, "", "\t")
-    return data
+  }
+  data, _ := json.MarshalIndent(&list, "", "\t")
+  return data
 }
