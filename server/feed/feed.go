@@ -74,8 +74,11 @@ func Feed(link string) ([]byte){
       if link == "https://gigazine.net/news/rss_2.0/" {
         url := ImageLink(item.GUID)
         info.Image = GetImage(url)
+      } else if item.Image != nil {
+        fmt.Println(item.Image.URL)
+        info.Image = GetImage(item.Image.URL)
       } else {
-         file, err := os.Open("./rss.jpg")
+         file, err := os.Open("./feed/rss.jpg")
          if err != nil {
            log.Fatal(err)
          }
@@ -89,7 +92,7 @@ func Feed(link string) ([]byte){
 
          info.Image = base64.StdEncoding.EncodeToString(data)
       }
-      
+
       list = append(list, info)
     }
     data, _ := json.MarshalIndent(&list, "", "\t")
